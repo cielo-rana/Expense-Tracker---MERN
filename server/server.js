@@ -17,7 +17,7 @@ app.use(express.json());
 //mongodb connection
 const con = require('./db/connection');
 
-//use routes
+//use routes 
 app.use(require('./routes/route'));
 
 con.then(db=>{
