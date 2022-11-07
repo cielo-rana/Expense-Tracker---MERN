@@ -5,13 +5,19 @@ import {default as api} from '../store/apiSlice'
 export default function List() {
 
     const {data, isFetching, isSuccess, isError} =api.useGetLabelsQuery() 
+    const[deleteTransaction] = api.useDeleteTransactionMutation()
     let Transactions;
 
+    const handlerClick = (e) => {
+        if(e.target.dataset.id) return 0;
+        deleteTransaction({_id:e.target.dataset.id})
+    }
+
     if(isFetching){
-        // console.log('Hey i got inside');
         Transactions = <div>Fetching</div>
     }else if(isSuccess){
-        Transactions = data.map((v,k)=><Transaction key={k} category={v}></Transaction>)
+        console.log(data)
+        Transactions = data.map((v,k)=><Transaction key={k} category={v} handler={handlerClick}></Transaction>)
     }else if(isError){
         Transactions = <div>Error</div>
     }
@@ -25,11 +31,11 @@ export default function List() {
   )
 }
 
-function Transaction({category}){
+function Transaction({category,handler}){
     if(!category) return null;
     return(
         <div className='item flex justify-center bg-gray-50 py-2 rounded-r' style={{borderRight: `8px solid ${category.color ?? '#e5e5e5'}`}}>
-            <button className='px-3'><box-icon color={category.color ?? '#e5e5e5'} size='1em' name='trash'></box-icon></button>
+            <button className='px-3' onClick={handler}><box-icon data-id={category._id ?? ''} color={category.color ?? '#e5e5e5'} size='1em' name='trash'></box-icon></button>
             <span className='block w-full'>{category.name ?? ''}</span>
         </div>
     )
