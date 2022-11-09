@@ -1,5 +1,5 @@
-import React from 'react'
-import 'boxicons'
+import React from 'react';
+import 'boxicons';
 import {default as api} from '../store/apiSlice'
 
 export default function List() {
@@ -9,14 +9,13 @@ export default function List() {
     let Transactions;
 
     const handlerClick = (e) => {
-        if(e.target.dataset.id) return 0;
-        deleteTransaction({_id:e.target.dataset.id})
+        if(!e.target.dataset.id) return 0;
+        deleteTransaction({_id : e.target.dataset.id})
     }
 
     if(isFetching){
         Transactions = <div>Fetching</div>
     }else if(isSuccess){
-        console.log(data)
         Transactions = data.map((v,k)=><Transaction key={k} category={v} handler={handlerClick}></Transaction>)
     }else if(isError){
         Transactions = <div>Error</div>

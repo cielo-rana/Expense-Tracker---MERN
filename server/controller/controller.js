@@ -49,7 +49,7 @@ async function get_Transaction(req,res){
 
 //delete: /api/transaction
 async function delete_Transaction(req,res){
-    if(!req.body) res.status(400).json({message:'Request body not found'});
+    if (!req.body) res.status(400).json({message:'Request body not found'});
     await model.Transaction.deleteOne(req.body, function(err){
         if(!err) res.json('Record Deleted...!');
     }).clone().catch(function(err){
@@ -59,23 +59,23 @@ async function delete_Transaction(req,res){
 
 //get: api/labels
 async function get_Labels(req,res){
-    await model.Transaction.aggregate([
+    model.Transaction.aggregate([
         {
             $lookup : {
-                from:"categories",
+                from: 'categories',
                 localField: 'type',
-                foreignField: "type",
+                foreignField: 'type',
                 as: 'categories_info'
             }
         },
         {
-            $unwind : 'categories_info'
+            $unwind : '$categories_info'
         }
     ]).then(result => {
         let data = result.map(v => Object.assign({}, {_id: v._id, name: v.name, type: v.type, amount: v.amount, color: v.categories_info['color']}));
         res.json(data);
     }).catch(error => {
-        res.status(400).json('looup collection error');
+        res.status(400).json('lookup collection error');
     })
 }
 
